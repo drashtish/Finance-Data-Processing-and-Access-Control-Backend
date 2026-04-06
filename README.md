@@ -76,6 +76,8 @@ npx prisma db push          # create tables
 npx prisma db seed          # seed sample users and records
 ```
 
+> `npm install` automatically runs `prisma generate` to build the Prisma client.
+
 ### 4. Run the server
 
 ```bash

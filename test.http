@@ -11,7 +11,7 @@
 @password = password123
 
 # ── Copy token from login response and paste below ──
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxNjU0Y2Y4OC00OGU3LTQzZDQtYjEzYS04MjVlODNiZTkxNjgiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NzU0NzY1MTUsImV4cCI6MTc3NjA4MTMxNX0.cJSNhm4kmcgPm45U1aLappWsYWYTRm-R64BSEPO7elc
+@token = PASTE_TOKEN_HERE
 
 
 # ════════════════════════════════════════════
