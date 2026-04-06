@@ -48,8 +48,8 @@ A RESTful backend for managing financial records with role-based access control,
 ### 1. Clone & install
 
 ```bash
-git clone <repo-url>
-cd <repo-folder>
+git clone https://github.com/drashtish/Finance-Data-Processing-and-Access-Control-Backend.git
+cd Finance-Data-Processing-and-Access-Control-Backend
 npm install
 ```
 
@@ -59,7 +59,13 @@ npm install
 cp .env.example .env
 ```
 
-Edit `.env` and set a strong `JWT_SECRET`:
+Only `JWT_SECRET` is required — everything else works as-is. Generate one with:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+```
+
+Then paste the output into `.env`:
 
 ```
 DATABASE_URL="file:dev.db"
