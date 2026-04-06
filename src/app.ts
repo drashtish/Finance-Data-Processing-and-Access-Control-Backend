@@ -7,10 +7,10 @@ import dashboardRoutes from './modules/dashboard/dashboard.routes';
 
 const app = express();
 
-// ── Body parsing ──────────────────────────────────────────────────────────────
+//  Body parsing 
 app.use(express.json());
 
-// ── Routes ────────────────────────────────────────────────────────────────────
+// Routes
 app.get('/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
@@ -20,7 +20,7 @@ app.use('/api/v1/users', usersRoutes);
 app.use('/api/v1/records', recordsRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);
 
-// ── 404 fallback ──────────────────────────────────────────────────────────────
+//  404 fallback 
 app.use((_req: Request, res: Response) => {
   res.status(404).json({
     success: false,
@@ -28,7 +28,7 @@ app.use((_req: Request, res: Response) => {
   });
 });
 
-// ── Global error handler (must be last) ───────────────────────────────────────
+//  Global error handler (must be last) 
 app.use(errorHandler);
 
 export default app;
