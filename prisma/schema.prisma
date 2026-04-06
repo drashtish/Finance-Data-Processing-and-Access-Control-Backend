@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ── Enums ─────────────────────────────────────────────────────────────────────
+
+enum Role {
+  VIEWER
+  ANALYST
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum RecordType {
+  INCOME
+  EXPENSE
+}
+
+enum AuditAction {
+  CREATED
+  UPDATED
+  DELETED
+}
+
+// ── Models ────────────────────────────────────────────────────────────────────
+
+model User {
+  id           String     @id @default(uuid())
+  name         String
+  email        String     @unique
+  passwordHash String
+  role         Role       @default(VIEWER)
+  status       UserStatus @default(ACTIVE)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  // Relations
+  createdRecords FinancialRecord[] @relation("RecordCreatedBy")
+  deletedRecords FinancialRecord[] @relation("RecordDeletedBy")
+  auditLogs      AuditLog[]
+}
+
+model FinancialRecord {
+  id          String     @id @default(uuid())
+  amount      Decimal
+  type        RecordType
+  category    String
+  date        DateTime
+  notes       String?
+  isDeleted   Boolean    @default(false)
+  deletedAt   DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // Relations
+  createdById  String
+  createdBy    User    @relation("RecordCreatedBy", fields: [createdById], references: [id])
+  deletedById  String?
+  deletedBy    User?   @relation("RecordDeletedBy", fields: [deletedById], references: [id])
+
+  // Indexes
+  @@index([isDeleted, date])
+  @@index([isDeleted, type])
+  @@index([isDeleted, category])
+  @@index([createdById])
+}
+
+model AuditLog {
+  id         String      @id @default(uuid())
+  action     AuditAction
+  entityType String
+  entityId   String
+  before     String?
+  after      String?
+  timestamp  DateTime    @default(now())
+
+  // Relations
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  // Indexes
+  @@index([entityType, entityId])
+  @@index([userId])
+  @@index([timestamp])
+}

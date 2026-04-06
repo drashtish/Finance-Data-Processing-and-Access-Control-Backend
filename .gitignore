@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.env
+dev.db
+dev.db-journal
+*.db
+*.db-shm
+*.db-wal
+
+/src/generated/prisma
+
+.claude/

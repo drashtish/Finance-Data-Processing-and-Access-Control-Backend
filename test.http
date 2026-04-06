@@ -1,0 +1,211 @@
+# ─────────────────────────────────────────────
+# Finance API — REST Client test file
+# Install "REST Client" extension in VS Code
+# Click "Send Request" above any request block
+# ─────────────────────────────────────────────
+
+@base = http://localhost:3000/api/v1
+@adminEmail = admin@finance.dev
+@analystEmail = analyst@finance.dev
+@viewerEmail = viewer@finance.dev
+@password = password123
+
+# ── Copy token from login response and paste below ──
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxNjU0Y2Y4OC00OGU3LTQzZDQtYjEzYS04MjVlODNiZTkxNjgiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NzU0NzY1MTUsImV4cCI6MTc3NjA4MTMxNX0.cJSNhm4kmcgPm45U1aLappWsYWYTRm-R64BSEPO7elc
+
+
+# ════════════════════════════════════════════
+# AUTH
+# ════════════════════════════════════════════
+
+### Login as Admin
+POST {{base}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{adminEmail}}",
+  "password": "{{password}}"
+}
+
+###  Login as Analyst
+POST {{base}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{analystEmail}}",
+  "password": "{{password}}"
+}
+
+### Login as Viewer
+POST {{base}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{viewerEmail}}",
+  "password": "{{password}}"
+}
+
+### Get current user (me)
+GET {{base}}/auth/me
+Authorization: Bearer {{token}}
+
+### Logout
+POST {{base}}/auth/logout
+Authorization: Bearer {{token}}
+
+
+# ════════════════════════════════════════════
+# USERS  (ADMIN only)
+# ════════════════════════════════════════════
+
+### List all users
+GET {{base}}/users
+Authorization: Bearer {{token}}
+
+### List users — page 2, limit 2
+GET {{base}}/users?page=2&limit=2
+Authorization: Bearer {{token}}
+
+### Get user by ID  (replace id)
+GET {{base}}/users/REPLACE_USER_ID
+Authorization: Bearer {{token}}
+
+### Create a new user
+POST {{base}}/users
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Jane Doe",
+  "email": "jane@finance.dev",
+  "password": "securepass123",
+  "role": "ANALYST"
+}
+
+### Update user (change role or status)
+PATCH {{base}}/users/REPLACE_USER_ID
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "role": "VIEWER"
+}
+
+### Deactivate a user
+PATCH {{base}}/users/REPLACE_USER_ID
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "status": "INACTIVE"
+}
+
+
+# ════════════════════════════════════════════
+# FINANCIAL RECORDS
+# ════════════════════════════════════════════
+
+### List all records (default: date desc)
+GET {{base}}/records
+Authorization: Bearer {{token}}
+
+### List with pagination
+GET {{base}}/records?page=1&limit=5
+Authorization: Bearer {{token}}
+
+### Filter by type
+GET {{base}}/records?type=INCOME&limit=5
+Authorization: Bearer {{token}}
+
+### Filter by category
+GET {{base}}/records?category=salary&limit=5
+Authorization: Bearer {{token}}
+
+### Filter by date range
+GET {{base}}/records?date_from=2026-01-01T00:00:00.000Z&date_to=2026-03-31T23:59:59.000Z
+Authorization: Bearer {{token}}
+
+### Filter by amount range
+GET {{base}}/records?min_amount=100&max_amount=5000
+Authorization: Bearer {{token}}
+
+### Sort by amount ascending
+GET {{base}}/records?sort=amount_asc&limit=5
+Authorization: Bearer {{token}}
+
+### Get single record by ID
+GET {{base}}/records/REPLACE_RECORD_ID
+Authorization: Bearer {{token}}
+
+### Create an INCOME record  (ANALYST or ADMIN)
+POST {{base}}/records
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "amount": 8500,
+  "type": "INCOME",
+  "category": "Freelance",
+  "date": "2026-03-15T00:00:00.000Z",
+  "notes": "Website project payment"
+}
+
+### Create an EXPENSE record
+POST {{base}}/records
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "amount": 350,
+  "type": "EXPENSE",
+  "category": "Travel",
+  "date": "2026-03-20T00:00:00.000Z",
+  "notes": "Client site visit"
+}
+
+### Update a record  (ANALYST or ADMIN)
+PATCH {{base}}/records/REPLACE_RECORD_ID
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "amount": 400,
+  "notes": "Updated after receipt"
+}
+
+### Delete (soft-delete) a record  (ADMIN only)
+DELETE {{base}}/records/REPLACE_RECORD_ID
+Authorization: Bearer {{token}}
+
+
+# ════════════════════════════════════════════
+# DASHBOARD
+# ════════════════════════════════════════════
+
+### Overall summary
+GET {{base}}/dashboard/summary
+Authorization: Bearer {{token}}
+
+### Summary for a date range
+GET {{base}}/dashboard/summary?date_from=2026-01-01T00:00:00.000Z&date_to=2026-03-31T23:59:59.000Z
+Authorization: Bearer {{token}}
+
+### Breakdown by category
+GET {{base}}/dashboard/by-category
+Authorization: Bearer {{token}}
+
+### Monthly trends
+GET {{base}}/dashboard/trends?group_by=month
+Authorization: Bearer {{token}}
+
+### Daily trends for March
+GET {{base}}/dashboard/trends?group_by=day&date_from=2026-03-01T00:00:00.000Z&date_to=2026-03-31T23:59:59.000Z
+Authorization: Bearer {{token}}
+
+### Recent audit activity (last 10)
+GET {{base}}/dashboard/recent-activity
+Authorization: Bearer {{token}}
+
+### Recent audit activity (last 5)
+GET {{base}}/dashboard/recent-activity?limit=5
+Authorization: Bearer {{token}}
